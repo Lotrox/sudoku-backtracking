@@ -13,47 +13,47 @@ using namespace std;
 /*
  * 
  */
-bool factible(int* *problema, int puestas, int* *sol){
+bool factible(int puestas, int* *sol){
     int x = puestas/9;
     int y = puestas%9;
     for(int i=0;i<9;i++){
         if((sol[x][y] == sol[x][i]) && (y != i)) return false; /*Coincidencia en fila.*/
         if((sol[x][y] == sol[i][y]) && (x != i)) return false; /*Coincidencia en columna.*/
     }
-    /*while(x%3 != 0){
-        x--;
+    
+    while(x%3 != 0)x--;
+    while(y%3 != 0)y--;
+    
+    for(int i=x;i<x+3;i++){
+        for(int j=y;j<y+3;j++){
+            if((i != puestas/9) && (j != puestas%9)){
+                if(sol[puestas/9][puestas%9] == sol[i][j]) return false;
+            }
+        }
     }
-    while(y%3 != 0){
-        y--;
-    }*/
     return true;
 }
 
 void imprimirSol(int* *sol){
-    cout<<"SOLUCION"<<endl;
+    cout<<"SOLUCION";
     for(int i=0;i<9;i++){
         cout<<endl;
         for(int j=0;j<9;j++) cout<<sol[i][j]<<" ";
     }
-    cin.get();
 }
 
-void sudokuBT(int* *problema, int puestas, int* *sol){
-    if(puestas == 81) imprimirSol(sol);
-    cout<<endl<<"Puestas: "<<puestas<<endl;
-    if(!problema[puestas/9][puestas%9]){
-        cout<<"No hay numero ("<<puestas/9<<","<<puestas%9<<")."<<endl;
+void sudokuBT(bool& fin, int puestas, int* *sol){
+    if(puestas == 81) fin = true;
+    else if(!sol[puestas/9][puestas%9]){
         for(int c=1;c<=9;c++){
             sol[puestas/9][puestas%9] = c;
-            if(factible(problema, puestas, sol)){
-                cout<<c<<" es factible."<<endl;
-                sudokuBT(problema, puestas+1, sol);
+            if(factible(puestas, sol)){
+                sudokuBT(fin, puestas+1, sol);
             }
         }
         sol[puestas/9][puestas%9] = 0;
     }else{
-        cout<<sol[puestas/9][puestas%9]<<" ya está puesta."<<endl;
-        sudokuBT(problema, puestas+1, sol);
+        sudokuBT(fin, puestas+1, sol);
     }
 }
 
@@ -79,26 +79,42 @@ int main(int argc, char** argv) {
     sudoku[1][5] = 5;
     sudoku[2][1] = 9;
     sudoku[2][2] = 8;
-    sudoku[2][7] = 6;
+    sudoku[2][7] = 6;  
+    sudoku[3][0] = 8;
+    sudoku[3][4] = 6;
+    sudoku[3][8] = 3;
+    sudoku[4][0] = 4;
+    sudoku[4][3] = 8;
+    sudoku[4][5] = 3;
+    sudoku[4][8] = 1;
+    sudoku[5][8] = 6;
+    sudoku[5][0] = 7;
+    sudoku[5][4] = 2;
+    sudoku[6][1] = 6;
+    sudoku[6][6] = 2;
+    sudoku[6][7] = 8;
+    sudoku[7][3] = 4;
+    sudoku[7][4] = 1;
+    sudoku[7][5] = 9;
+    sudoku[7][8] = 5;
+    sudoku[8][4] = 8;
+    sudoku[8][7] = 7;
+    sudoku[8][8] = 9;
     
-    solucion[0][0] = 5; 
-    solucion[0][1] = 3;
-    solucion[0][4] = 7;
-    solucion[1][0] = 6;
-    solucion[1][3] = 1;
-    solucion[1][4] = 9;
-    solucion[1][5] = 5;
-    solucion[2][1] = 9;
-    solucion[2][2] = 8;
-    solucion[2][7] = 6;
     
+    
+    cout<<"SUDOKU PROPUESTO";
     for(int i=0;i<9;i++){
         cout<<endl;
-        for(int j=0;j<9;j++) cout<<sudoku[i][j]<<" ";
+        for(int j=0;j<9;j++){
+            solucion[i][j] = sudoku[i][j];
+            cout<<sudoku[i][j]<<" ";
+        }
     }
-    
-    sudokuBT(sudoku, 0, solucion);
-    
+    cout<<endl<<endl;
+    bool fin = false;
+    sudokuBT(fin, 0, solucion);
+    if(fin) imprimirSol(solucion);
     return 0;
 }
 
