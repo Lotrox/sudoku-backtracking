@@ -43,7 +43,7 @@ void imprimirSol(int* *sol){
 }
 
 void sudokuBT(bool& fin, int puestas, int* *sol){
-    if(puestas == 81) fin = true;
+    if(puestas == 81) imprimirSol(sol);
     else if(!sol[puestas/9][puestas%9]){
         for(int c=1;c<=9;c++){
             sol[puestas/9][puestas%9] = c;
@@ -117,4 +117,3 @@ int main(int argc, char** argv) {
     if(fin) imprimirSol(solucion);
     return 0;
 }
-
